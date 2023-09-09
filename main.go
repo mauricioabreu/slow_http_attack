@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net"
 	"time"
 
@@ -13,8 +13,7 @@ func main() {
 	var conn net.Conn
 	var err error
 	var timerChan <-chan time.Time
-	var timer *time.Timer
-	timer = time.NewTimer(10 * time.Second)
+	timer := time.NewTimer(10 * time.Second)
 	timerChan = timer.C
 
 loop:
@@ -40,7 +39,7 @@ loop:
 			case <-timerChan:
 				timer.Reset(10 * time.Second)
 				fmt.Fprintf(conn, "\r\n\r\n")
-				ioutil.ReadAll(conn)
+				io.ReadAll(conn)
 				log.Info().Msg("closing connection...")
 				conn.Close()
 				continue loop
